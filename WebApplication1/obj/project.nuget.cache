@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "gDCaMiWCX9hvO3H4lhdrtFda9dx+83iArpQX8Tw7Gp6lnaSyMfk+VA4tp+gF8iwoYCtBhaQcKzhOIi2OPJQwVw==",
+  "dgSpecHash": "0o/ukutiU4coydUVhlFBi7arocQ+kGPcHryuVfYl/o1P6YUlub8/cxujHG7RuTlqkmVg5MJNq9R0X5FdnfcDHg==",
   "success": true,
-  "projectFilePath": "D:\\COLLEGE WORKSS\\YEAR 3\\Application Development\\Blog\\WebApplication1\\CourseWork.csproj",
+  "projectFilePath": "D:\\COLLEGE WORKSS\\YEAR 3\\Application Development\\Blog Backend\\WebApplication1\\CourseWork.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Dell\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
+    "C:\\Users\\Dell\\.nuget\\packages\\dotenv.net\\3.1.3\\dotenv.net.3.1.3.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.3.3\\microsoft.codeanalysis.analyzers.3.3.3.nupkg.sha512",
