@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Security.Claims;
 using CourseWork.Common.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -43,9 +44,8 @@ namespace CourseWork.Common.Middlewares.Auth
                 {
                     throw new HttpException(HttpStatusCode.Unauthorized, "User ID claim not found in token");
                 }
-
                 string roleFromUrl = context.HttpContext.Request.Path.Value.Split('/')[2]; // Get the role from the URL
-                
+
 
                 if (roleFromToken != roleFromUrl)
                 {
@@ -55,6 +55,7 @@ namespace CourseWork.Common.Middlewares.Auth
                 {
                     context.HttpContext.Items["UserId"] = userIdClaim.Value;
                 }
+
             }
             catch (Exception)
             {

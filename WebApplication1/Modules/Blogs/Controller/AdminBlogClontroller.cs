@@ -65,7 +65,7 @@ namespace CourseWork.Modules.Blogs.Controller
 
             int parsePage = int.Parse(page);
 
-            PaginatedResponse<BlogEntity> result = await _blogService.GetPaginatedBlogList(parsePage,shortBy);
+            PaginatedResponse<BlogEntity> result = await _blogService.GetPaginatedBlogList(parsePage, shortBy);
 
             HttpContext.Items["CustomMessage"] = "Blog List Successfully";
             return result;
@@ -74,9 +74,9 @@ namespace CourseWork.Modules.Blogs.Controller
 
         [HttpGet("info/{blog}")]
         [ServiceFilter(typeof(RoleAuthFilter))]
-        public async Task<BlogEntity> GetBlogById(string blog)
+        public async Task<GetBlogByIdResponseDto> GetBlogById(string blog)
         {
-            BlogEntity? existingBlog = await _blogService.GetByIdAsync(int.Parse(blog));
+            GetBlogByIdResponseDto? existingBlog = await _blogService.GetBlogWithCommentsAsync(int.Parse(blog));
             if (existingBlog == null)
             {
                 throw new HttpException(HttpStatusCode.NotFound, "Blog with that id was not found");
@@ -117,5 +117,29 @@ namespace CourseWork.Modules.Blogs.Controller
             return result;
         }
 
+        [HttpDelete("soft-delete/{blog}")]
+        [ServiceFilter(typeof(RoleAuthFilter))]
+        public async Task<BlogEntity> SoftDeleteBlog(string blog)
+        {
+
+            return await _blogService.SoftDeleteBlog(int.Parse(blog));
+        }
+
+        [HttpPost("restore/{blog}")]
+        [ServiceFilter(typeof(RoleAuthFilter))]
+        public async Task<BlogEntity> RestoreBlog(string blog)
+        {
+
+            return await _blogService.RestoreBlog(int.Parse(blog));
+        }
+
+
+        [HttpDelete("hard-delete/{blog}")]
+        [ServiceFilter(typeof(RoleAuthFilter))]
+        public async Task<BlogEntity> HardDelete(string blog)
+        {
+
+            return await _blogService.HardDelete(int.Parse(blog));
+        }
     }
 }
