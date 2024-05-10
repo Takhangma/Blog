@@ -71,6 +71,33 @@ namespace CourseWork.Modules.Blogs.Controller
             return result;
         }
 
+        [HttpGet("top-ten-popular")]
+        [ServiceFilter(typeof(RoleAuthFilter))]
+        public async Task<IEnumerable<BlogEntity>> GetTopTenBlogList([FromQuery] string? year, [FromQuery] string? month)  //ToDoType
+        {
+            //Getting page from query
+            //  page = HttpContext.Request.Query["page"].ToString();
+            int? convertedYear = year != null ? int.Parse(year) : null;
+            int? convertedMonth = month != null ? int.Parse(month) : null;
+
+            IEnumerable<BlogEntity> result = await _blogService.GetTopTenBlogs(convertedYear, convertedMonth);
+
+            HttpContext.Items["CustomMessage"] = "Blog List Successfully";
+            return result;
+        }
+
+        [HttpGet("top-ten-popular-bloggers")]
+        [ServiceFilter(typeof(RoleAuthFilter))]
+        public async Task<IEnumerable<UserInfo>> GetTopTenBloggers([FromQuery] string? year, [FromQuery] string? month)
+        {
+            int? convertedYear = year != null ? int.Parse(year) : null;
+            int? convertedMonth = month != null ? int.Parse(month) : null;
+
+            IEnumerable<UserInfo> result = await _blogService.GetTopTenBloggers(convertedYear, convertedMonth);
+
+            HttpContext.Items["CustomMessage"] = "Blogger List Successfully";
+            return result;
+        }
 
         [HttpGet("info/{blog}")]
         [ServiceFilter(typeof(RoleAuthFilter))]

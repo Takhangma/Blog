@@ -45,6 +45,34 @@ namespace CourseWork.Modules.User.Controller
             }
         }
 
+        [HttpGet("authorized-info")]
+        [ServiceFilter(typeof(RoleAuthFilter))]
+        public async Task<AuthorizedUserDto> GetAuthorizedUser()
+        {
+            try
+            {
+                string userId = (HttpContext.Items["UserId"] as string)!;
+                UserEntity? result = await _userService.GetUserByIdAsync(int.Parse(userId));
+                if (result == null)
+                {
+                    throw new HttpException(HttpStatusCode.NotFound, "Admin not found");
+                }
+
+                HttpContext.Items["CustomMessage"] = "User Get Successfully";
+                AuthorizedUserDto dataToSend = new AuthorizedUserDto
+                {
+                    Id = result.id,
+                    UserName = result.UserName,
+                    Email = result.Email,
+                    Name = result.Name
+                };
+                return dataToSend;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
 
         [HttpGet("info/{userId}")]
@@ -64,7 +92,7 @@ namespace CourseWork.Modules.User.Controller
                 UserResponseGetById dataToSend = new UserResponseGetById
                 {
                     Id = result.id,
-                    UserName = result.UserName
+                    UserName = result.Name
                 };
                 return dataToSend;
             }
@@ -72,6 +100,38 @@ namespace CourseWork.Modules.User.Controller
             {
                 throw;
             }
+        }
+
+        [HttpPatch("update")]
+        [ServiceFilter(typeof(RoleAuthFilter))]
+
+        public async Task<UserResponseGetById> CreateAdmin(UserUpdateDto incomingData)
+        {
+            try
+            {
+                string userId = (HttpContext.Items["UserId"] as string)!;
+                UserEntity? result = await _userService.GetUserByIdAsync(int.Parse(userId));
+
+                if (result == null)
+                {
+                    throw new HttpException(HttpStatusCode.NotFound, "User not found");
+                }
+                UserEntity updatedResult = await _userService.UpdateUser(result, incomingData);
+                UserResponseGetById dataToSend = new UserResponseGetById
+                {
+                    Id = updatedResult.id,
+                    UserName = updatedResult.UserName
+                };
+                HttpContext.Items["CustomMessage"] = "User Updated Successfully";
+                return dataToSend;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+
         }
 
         [HttpDelete("soft-delete/{userId}")]
@@ -175,6 +235,8 @@ namespace CourseWork.Modules.User.Controller
                 throw;
             }
         }
+
+
 
     }
 }

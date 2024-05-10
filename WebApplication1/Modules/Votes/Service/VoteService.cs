@@ -1,5 +1,6 @@
 ﻿using CourseWork.Common.Dtos;
 using CourseWork.Modules.Blogs.Entity;
+using CourseWork.Modules.Votes.Dtos;
 using CourseWork.Modules.Votes.Entity;
 using CourseWork.Modules.Votes.Repository;
 
@@ -37,6 +38,21 @@ namespace CourseWork.Modules.Votes.Service
         public async Task<VoteEntity?> FindVoteByUserAndComment(int commentId, int userId)
         {
             return await _voteRepo.FindOne(entity => entity.CommentsId == commentId && entity.VoteUser.UserId == userId);
+        }
+
+        public async Task<TotalVotesResponseDto> GetTotalVotes()
+        {
+            int totalVotes = await _voteRepo.GetTotalCount();
+            var totalData = await _voteRepo.GetAllAsync();
+            int totalUpVotes = totalData.Count(entity => entity.IsUpVote);
+            int totalDownVotes = totalData.Count(entity => !entity.IsUpVote);
+
+            return new TotalVotesResponseDto
+            {
+                TotalVotes = totalVotes,
+                TotalUpVotes = totalUpVotes,
+                TotalDownVotes = totalDownVotes
+            };
         }
     }
 }

@@ -44,15 +44,15 @@ namespace CourseWork.Modules.Blogs.Services
         public async Task<BlogEntity> UpdateBlogs(BlogUpdateDto incomingData, CommonUserDto incomingUserInfo, BlogEntity blogEntity)
         {
 
-            if (incomingData.Title != null)
+            if (!string.IsNullOrEmpty(incomingData.Title))
             {
                 blogEntity.Title = incomingData.Title;
             }
-            if (incomingData.Content != null)
+            if (!string.IsNullOrEmpty(incomingData.Content))
             {
                 blogEntity.Content = incomingData.Content;
             }
-            if (incomingData.ImgUrl != null)
+            if (!string.IsNullOrEmpty(incomingData.ImgUrl))
             {
                 blogEntity.ImgUrl = incomingData.ImgUrl;
             }
@@ -117,6 +117,62 @@ namespace CourseWork.Modules.Blogs.Services
                 throw new HttpException(HttpStatusCode.NotFound, "Blog with that id was not found");
             }
             return await _blogRepo.DeleteAsync(existingBlog);
+        }
+
+
+        //Find all Blog without pagination
+        public async Task<IEnumerable<BlogEntity>> GetTopTenBlogs(int? year, int? month)
+        {
+            IEnumerable<BlogEntity> blogs = await _blogRepo.GetAllAsync();
+            int upVoteWeightage = 2;
+            int downVoteWeightage = -1;
+            int commentWeightage = 1;
+
+            if (year.HasValue && month.HasValue)
+            {
+                blogs = blogs.Where(b => b.CreatedAt.Year == year.Value && b.CreatedAt.Month == month.Value);
+            }
+
+            return blogs
+                .OrderByDescending(b =>
+                    upVoteWeightage * b.UpVote +
+                    downVoteWeightage * b.DownVote +
+                    commentWeightage * b.Comments.Count)
+                .Take(10);
+        }
+
+
+        public async Task<IEnumerable<UserInfo>> GetTopTenBloggers(int? year = null, int? month = null)
+        {
+            IEnumerable<BlogEntity> blogs = await _blogRepo.GetAllAsync();
+            int upVoteWeightage = 2;
+            int downVoteWeightage = -1;
+            int commentWeightage = 1;
+
+            if (year.HasValue && month.HasValue)
+            {
+                blogs = blogs.Where(b => b.CreatedAt.Year == year.Value && b.CreatedAt.Month == month.Value);
+            }
+
+            return blogs
+                .GroupBy(b => b.PostUser.UserId) // Group by UserId instead of PostUser
+                .Select(g => new
+                {
+                    User = g.First().PostUser, // Get the first PostUser object from each group
+                    Popularity = g.Sum(b =>
+                        upVoteWeightage * b.UpVote +
+                        downVoteWeightage * b.DownVote +
+                        commentWeightage * b.Comments.Count)
+                })
+                .OrderByDescending(u => u.Popularity)
+                .Take(10)
+                .Select(u => u.User);
+        }
+
+        public async Task<IEnumerable<BlogEntity>> GetPersonalBlogs(UserEntity user)
+        {
+            IEnumerable<BlogEntity> blogs = await _blogRepo.GetAllAsyncExcludeSoftDelete();
+            return blogs.Where(b => b.PostUser.UserId == user.id);
         }
     }
 }

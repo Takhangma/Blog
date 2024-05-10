@@ -460,6 +460,15 @@ namespace CourseWork.Modules.Votes.Controller
             return responseData;
         }
 
+        //Returns Total Votes, including total upvotes and downvotes
+        [HttpGet("total-votes")]
+        [ServiceFilter(typeof(RoleAuthFilter))]
+        public async Task<TotalVotesResponseDto> GetTotalVotes()
+        {
+            TotalVotesResponseDto result = await _voteService.GetTotalVotes();
+            return new TotalVotesResponseDto { TotalVotes = result.TotalVotes, TotalUpVotes = result.TotalUpVotes, TotalDownVotes = result.TotalDownVotes };
+        }
+
     }
 }
 
